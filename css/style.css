@@ -22,7 +22,8 @@ body {
   text-align: center;
 }
 
-#message {
+#message,
+#messageCOunter {
   font-size: 20px;
 }
 
@@ -32,7 +33,7 @@ body {
   background-color: aquamarine;
 }
 
-button {
+#resetTurn {
   color: white;
   font-weight: bold;
   margin: 10px;
@@ -42,4 +43,38 @@ button {
   width: 100px;
   height: 100px;
   border-radius: 50%;
+}
+
+#resetGame {
+  color: white;
+  font-weight: bold;
+  margin: 10px 0 0 0;
+  padding: 5px;
+  font-size: 14px;
+  background-color: green;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  width: 200px;
+  height: 25px;
+  border-radius: 0%;
+}
+
+.player-name {
+  display: inline;
+  margin: 10px;
+  padding: 10px;
+}
+
+input {
+  padding: 5px;
+  margin: 5px;
+}
+
+.error {
+  font-weight: bold;
+  color: white;
+  background-color: red;
+}
+
+.hidden {
+  visibility: hidden;
 }
