@@ -62,10 +62,6 @@ const initGame = () => {
   winnerCombo = []
   playerOneScore = 0
   playerTwoScore = 0
-  /* localStorage.setItem('playerOneName', playerOneName)
-  localStorage.setItem('playerOneScore', playerOneScore)
-  localStorage.setItem('playerTwoName', playerTwoName)
-  localStorage.setItem('playerTwoScore', playerTwoScore) */
   render()
 }
 
