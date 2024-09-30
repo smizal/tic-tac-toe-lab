@@ -20,6 +20,7 @@ let playerOneName
 let playerTwoName
 let playerOneScore
 let playerTwoScore
+let playWithPC = false
 
 /*------------------------ Cached Element References ------------------------*/
 const squareEls = document.querySelectorAll('.sqr')
@@ -28,6 +29,7 @@ const playerOneCounterEl = document.querySelector('#playerOneCounter')
 const playerTwoCounterEl = document.querySelector('#playerTwoCounter')
 const resetGameBtnEl = document.querySelector('#resetGame')
 const resetTurnBtnEl = document.querySelector('#resetTurn')
+const playWithPCBtnEl = document.querySelector('#playWithPC')
 
 /*-------------------------------- Functions --------------------------------*/
 
@@ -38,11 +40,13 @@ const initGame = () => {
     messageEl.classList.add('error')
     return
   }
-  playerTwoName = document.querySelector('#playerTwoName').value
-  if (playerTwoName.trim() === '') {
-    messageEl.textContent = `Error: Game is not initialized. Please enter player Two name`
-    messageEl.classList.add('error')
-    return
+  if (!playWithPC) {
+    playerTwoName = document.querySelector('#playerTwoName').value
+    if (playerTwoName.trim() === '') {
+      messageEl.textContent = `Error: Game is not initialized. Please enter player Two name`
+      messageEl.classList.add('error')
+      return
+    }
   }
 
   squareEls.forEach((squareEl) => {
@@ -78,6 +82,18 @@ const initTurn = () => {
   render()
 }
 
+const playingWithPC = () => {
+  if (document.querySelector('#playWithPC').checked) {
+    playWithPC = true
+    playerTwoName = 'PC'
+    document.querySelector('#playerTwoName').disabled = true
+  } else {
+    playWithPC = false
+    playerTwoName = ''
+    document.querySelector('#playerTwoName').disabled = false
+  }
+}
+
 const render = () => {
   updateBoard()
   updateMessage()
@@ -91,19 +107,22 @@ const updateBoard = () => {
 
 const updateMessage = () => {
   if (!winner && !tie) {
+    // render whose turn it is.
     if (turn === 'X') {
-      messageEl.textContent = `It is ${playerOneName} (${turn}) turn now` // render whose turn it is.
+      messageEl.textContent = `It is ${playerOneName} (${turn}) turn now`
     } else {
-      messageEl.textContent = `It is ${playerTwoName} (${turn}) turn now` // render whose turn it is.
+      messageEl.textContent = `It is ${playerTwoName} (${turn}) turn now`
     }
   } else if (!winner && tie) {
-    messageEl.textContent = `The game finished, no winner in this turn. good luck next time.` // render a tie message.
+    // render a tie message.
+    messageEl.textContent = `The game finished, no winner in this turn. good luck next time.`
   } else {
+    // render a congratulatory message to the player that has won
     styleWinnerSquares()
     if (turn === 'X') {
-      messageEl.textContent = `Congratulation ${playerOneName} (${turn}), You won this turn` // render a congratulatory message to the player that has won
+      messageEl.textContent = `Congratulation ${playerOneName} (${turn}), You won this turn`
     } else {
-      messageEl.textContent = `Congratulation ${playerTwoName} (${turn}), You won this turn` // render a congratulatory message to the player that has won
+      messageEl.textContent = `Congratulation ${playerTwoName} (${turn}), You won this turn`
     }
 
     messageEl.classList.add('winner')
@@ -120,14 +139,20 @@ const updateMessageCounter = () => {
   playerOneCounterEl.textContent = `player (x): ${playerOneName} Score: ${playerOneScore}`
   playerTwoCounterEl.textContent = `player (O): ${playerTwoName} Score: ${playerTwoScore}`
 }
+
 const handleClick = (event) => {
   let squareIndex = event.target.id
-  console.log(squareIndex)
   if (board[squareIndex] !== '' || winner) {
     return
   } else {
     placePiece(squareIndex)
-    console.log(board)
+    checkForWinner()
+    checkForTie()
+    switchPlayerTurn()
+    render()
+  }
+  if (!winner && !tie && playWithPC) {
+    placePCPiece()
     checkForWinner()
     checkForTie()
     switchPlayerTurn()
@@ -137,6 +162,20 @@ const handleClick = (event) => {
 
 const placePiece = (index) => {
   board[index] = turn
+  console.log(board)
+}
+
+const placePCPiece = () => {
+  let emptyIndexes = []
+  for (let i = 0; i < board.length; i++) {
+    if (board[i] === '') {
+      emptyIndexes.push(i)
+    }
+  }
+
+  const randomIndex = Math.floor(Math.random() * emptyIndexes.length)
+  board[emptyIndexes[randomIndex]] = turn
+  console.log(board)
 }
 
 const checkForWinner = () => {
@@ -198,5 +237,6 @@ squareEls.forEach((squareEl) => {
 
 resetGameBtnEl.addEventListener('click', initGame)
 resetTurnBtnEl.addEventListener('click', initTurn)
+playWithPCBtnEl.addEventListener('click', playingWithPC)
 
 // initGame()
